@@ -29,3 +29,58 @@ body {
 .header__btn:focus {
   color: $savoy-blue;
 }
+
+.options-modal {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 1rem;
+  background-color: white;
+}
+
+.options-form {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  margin: 0 auto;
+}
+
+.options-form__label {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.options-form__select {
+  display: block;
+  width: 170px;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  text-transform: capitalize;
+}
+
+.options-form__option {
+  text-transform: capitalize;
+}
+
+.options-form__select--lowercase,
+.options-form__select--lowercase .options-form__option {
+  text-transform: lowercase;
+}
+
+.options-form__submit-btn {
+  padding: 0.5em 1em;
+  margin-top: 1rem;
+  border: 1px solid $savoy-blue;
+  background: none;
+  cursor: pointer;
+}
+
+.options-form__submit-btn:hover,
+.options-form__submit-btn:focus {
+  background-color: $savoy-blue;
+  color: white;
+}
