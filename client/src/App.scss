@@ -4,6 +4,28 @@
   margin: 0;
 }
 
+$savoy-blue: rgb(75, 97, 209);
+
 body {
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.header {
+  padding: 1rem;
+}
+
+.header__btn {
+  display: block;
+  padding: 0.5em 1em;
+  margin: 0 auto;
+  border: none;
+  background: none;
+  font-size: 1rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.header__btn:hover,
+.header__btn:focus {
+  color: $savoy-blue;
 }
