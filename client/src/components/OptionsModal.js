@@ -55,6 +55,7 @@ export default function OptionsModal({
   }, [mood]);
 
   useEffect(() => {
+    setTense(tenseOptions[0]);
     setDisplayedTenseOptions(
       tenseOptions.map((tense) => (
         <option className="options-form__option" key={tense} value={tense}>
