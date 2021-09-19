@@ -14,11 +14,11 @@ export default function OptionsModal({
   const indicativoTenses = [
     "presente",
     "passato prossimo",
-    "imperfect",
+    "imperfetto",
     "trapassato prossimo",
     "passato remoto",
     "trapassato remoto",
-    "future",
+    "futuro",
     "futuro anteriore",
   ];
   const congiuntivoTenses = ["presente", "passato", "imperfetto", "trapassato"];
