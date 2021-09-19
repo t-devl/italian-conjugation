@@ -26,7 +26,7 @@ export default function OptionsModal({
   const imperativoTenses = ["presente"];
   const infinitoTenses = ["passato"];
   const participioTenses = ["presente", "passato"];
-  const gerundoTenses = ["presente", "passato"];
+  const gerundioTenses = ["presente", "passato"];
 
   useEffect(() => {
     switch (mood) {
@@ -48,8 +48,8 @@ export default function OptionsModal({
       case "participio":
         setTenseOptions(participioTenses);
         break;
-      case "gerundo":
-        setTenseOptions(gerundoTenses);
+      case "gerundio":
+        setTenseOptions(gerundioTenses);
         break;
     }
   }, [mood]);
