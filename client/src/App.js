@@ -24,6 +24,7 @@ function App() {
     setSelectedMood(mood);
     setSelectedTense(tense);
     setSelectedVerbEnding(verbEnding);
+    setIsGameRunning(true);
   };
 
   useEffect(() => {
@@ -64,6 +65,7 @@ function App() {
         tense={selectedTense}
         verbData={currentVerbData}
         selectVerb={selectVerb}
+        isGameRunning={isGameRunning}
       ></Game>
     </div>
   );

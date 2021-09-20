@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 export default function Game({ mood, tense, verbData, selectVerb }) {
   const [userInput, setUserInput] = useState("");
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    setUserInput("");
+    inputRef.current.focus();
+  }, [verbData]);
 
   const addAccent = (letter) => {
     setUserInput(userInput + letter);
+    inputRef.current.focus();
   };
 
   const handleSubmit = (e) => {
@@ -31,6 +38,7 @@ export default function Game({ mood, tense, verbData, selectVerb }) {
         </label>
         <input
           className="game__input"
+          ref={inputRef}
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
         ></input>

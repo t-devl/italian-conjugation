@@ -16,26 +16,45 @@ test("displays selected tense", () => {
   expect(screen.getByText(/presente/i)).toBeInTheDocument();
 });
 
-test("receives and displays current verb", () => {
-  const verbData = {
-    conjugation: "mangi",
-    subject: "tu",
-    verb: "mangiare",
-  };
-  render(<Game verbData={verbData}></Game>);
+describe("form", () => {
+  test("receives and displays current verb", () => {
+    const verbData = {
+      conjugation: "mangi",
+      subject: "tu",
+      verb: "mangiare",
+    };
+    render(<Game verbData={verbData}></Game>);
 
-  expect(screen.getByText(/mangiare/i)).toBeInTheDocument();
+    expect(screen.getByText(/mangiare/i)).toBeInTheDocument();
+  });
+
+  test("results in select verb function being called when submitted if the user input matches the conjugation", () => {
+    const verbData = {
+      conjugation: "mangi",
+      subject: "tu",
+      verb: "mangiare",
+    };
+    const selectVerb = jest.fn();
+    render(<Game verbData={verbData} selectVerb={selectVerb}></Game>);
+
+    userEvent.type(screen.getByRole("textbox"), "mangi{enter}");
+    expect(selectVerb).toHaveBeenCalledTimes(1);
+  });
 });
 
-test("select verb function is called if the submitted answer is correct", () => {
-  const verbData = {
-    conjugation: "mangi",
-    subject: "tu",
-    verb: "mangiare",
-  };
-  const selectVerb = jest.fn();
-  render(<Game verbData={verbData} selectVerb={selectVerb}></Game>);
+describe("accent buttons", () => {
+  test("add the accent to input when clicked", () => {
+    render(<Game></Game>);
 
-  userEvent.type(screen.getByRole("textbox"), "mangi{enter}");
-  expect(selectVerb).toHaveBeenCalledTimes(1);
+    userEvent.click(screen.getByRole("button", { name: /à/i }));
+    userEvent.click(screen.getByRole("button", { name: /è/i }));
+    expect(screen.getByDisplayValue(/àè/i)).toBeInTheDocument();
+  });
+
+  test("give input focus when clicked", () => {
+    render(<Game></Game>);
+
+    userEvent.click(screen.getByRole("button", { name: /à/i }));
+    expect(screen.getByRole("textbox")).toHaveFocus();
+  });
 });
