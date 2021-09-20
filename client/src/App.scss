@@ -112,7 +112,7 @@ body {
   width: 25ch;
   padding: 0 0.25em;
   margin: 1rem 0 0.75rem;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   text-align: center;
 }
 
@@ -122,4 +122,10 @@ body {
   margin: 0 0.35rem;
   font-size: 1rem;
   cursor: pointer;
+}
+
+@media (min-width: 700px) {
+  .game__input {
+    font-size: 1.5rem;
+  }
 }
