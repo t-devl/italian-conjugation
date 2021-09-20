@@ -2,10 +2,12 @@ import React, { useEffect, useState, useRef } from "react";
 
 export default function Game({ mood, tense, verbData, selectVerb }) {
   const [userInput, setUserInput] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const inputRef = useRef(null);
 
   useEffect(() => {
     setUserInput("");
+    setErrorMessage("");
     inputRef.current.focus();
   }, [verbData]);
 
@@ -19,8 +21,16 @@ export default function Game({ mood, tense, verbData, selectVerb }) {
     if (userInput.toLowerCase() === verbData.conjugation) {
       setUserInput("");
       selectVerb();
+    } else {
+      setErrorMessage("Incorrect. Try again.");
     }
   };
+
+  useEffect(() => {
+    if (errorMessage) {
+      setErrorMessage("");
+    }
+  }, [userInput]);
 
   return (
     <div className="game">
@@ -37,7 +47,7 @@ export default function Game({ mood, tense, verbData, selectVerb }) {
             : ""}
         </label>
         <input
-          className="game__input"
+          className={`game__input ${errorMessage ? "game__input--error" : ""}`}
           ref={inputRef}
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
@@ -80,6 +90,9 @@ export default function Game({ mood, tense, verbData, selectVerb }) {
             ù
           </button>
         </div>
+        {errorMessage ? (
+          <p className="game__error-message">{errorMessage}</p>
+        ) : null}
       </form>
     </div>
   );

@@ -5,6 +5,7 @@
 }
 
 $savoy-blue: rgb(75, 97, 209);
+$italian-flag-red: rgb(205, 33, 42);
 
 body {
   font-family: Arial, Helvetica, sans-serif;
@@ -112,8 +113,20 @@ body {
   width: 25ch;
   padding: 0 0.25em;
   margin: 1rem 0 0.75rem;
+  border: 1px solid rgb(0, 0, 0);
   font-size: 1.3rem;
   text-align: center;
+}
+
+.game__input:focus {
+  border: 1px solid rgb(221, 189, 45);
+  border-radius: 2px;
+  outline: none;
+}
+
+.game__input--error:focus {
+  border: 1px solid $italian-flag-red;
+  border-radius: 2px;
 }
 
 .game__accent-btn {
@@ -122,6 +135,11 @@ body {
   margin: 0 0.35rem;
   font-size: 1rem;
   cursor: pointer;
+}
+
+.game__error-message {
+  margin: 1rem 0;
+  color: $italian-flag-red;
 }
 
 @media (min-width: 700px) {

@@ -58,3 +58,15 @@ describe("accent buttons", () => {
     expect(screen.getByRole("textbox")).toHaveFocus();
   });
 });
+
+test("error message displays if the user input does not match the conjugation", () => {
+  const verbData = {
+    conjugation: "mangi",
+    subject: "tu",
+    verb: "mangiare",
+  };
+  render(<Game verbData={verbData}></Game>);
+
+  userEvent.type(screen.getByRole("textbox"), "parlo{enter}");
+  expect(screen.getByText(/incorrect\. try again\./i)).toBeInTheDocument();
+});
