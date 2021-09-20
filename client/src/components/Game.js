@@ -23,7 +23,11 @@ export default function Game({ mood, tense, verbData, selectVerb }) {
       </p>
       <form className="game__form" onSubmit={handleSubmit}>
         <label className="game__label">
-          {verbData ? `${verbData.verb} (${verbData.subject})` : ""}
+          {verbData
+            ? verbData.subject
+              ? `${verbData.verb} (${verbData.subject})`
+              : `${verbData.verb}`
+            : ""}
         </label>
         <input
           className="game__input"

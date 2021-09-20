@@ -16,47 +16,99 @@ const pool = new Pool({
 });
 
 app.get("/verbs/:mood/:tense/:verbEnding", async (req, res) => {
-  const table =
+  const tense = req.params.tense.split(" ").join("_");
+  if (
     req.params.mood === "infinito" ||
     req.params.mood === "participio" ||
     req.params.mood === "gerundio"
-      ? "conjugations_infinite"
-      : "conjugations_finite";
-
-  try {
-    const verbs = await pool.query(
-      `SELECT verbs.verb, subject_pronouns.pronoun as subject, ${table}.${req.params.mood}_${req.params.tense} as conjugation 
-      FROM ${table} 
-      JOIN subject_pronouns ON subject_id = subject_pronouns.id
-      JOIN verbs ON verb_id = verbs.id
-      WHERE verbs.verb_ending = '${req.params.verbEnding}'
-      ORDER BY random() LIMIT 50`
-    );
-    res.json(verbs.rows);
-  } catch (err) {
-    console.log(err.message);
+  ) {
+    try {
+      const verbs = await pool.query(
+        `SELECT verbs.verb, conjugations_nonfinite.${req.params.mood}_${tense} as conjugation 
+        FROM conjugations_nonfinite 
+        JOIN verbs ON verb_id = verbs.id
+        WHERE verbs.verb_ending = '${req.params.verbEnding}'
+        ORDER BY random() LIMIT 50`
+      );
+      res.json(verbs.rows);
+    } catch (err) {
+      console.log(err.message);
+    }
+  } else if (req.params.mood === "imperativo") {
+    try {
+      const verbs =
+        await pool.query(`SELECT verbs.verb,  subject_pronouns.pronoun as subject, conjugations_finite.imperativo_${tense} as conjugation 
+    FROM conjugations_finite 
+    JOIN subject_pronouns ON subject_id = subject_pronouns.id
+    JOIN verbs ON verb_id = verbs.id
+    WHERE verbs.verb_ending = '${req.params.verbEnding}'
+    AND conjugations_finite.imperativo_${tense} IS NOT NULL
+    ORDER BY random() LIMIT 50`);
+      res.json(verbs.rows);
+    } catch (err) {
+      console.log(err.message);
+    }
+  } else {
+    try {
+      const verbs = await pool.query(
+        `SELECT verbs.verb, subject_pronouns.pronoun as subject, conjugations_finite.${req.params.mood}_${tense} as conjugation 
+        FROM conjugations_finite 
+        JOIN subject_pronouns ON subject_id = subject_pronouns.id
+        JOIN verbs ON verb_id = verbs.id
+        WHERE verbs.verb_ending = '${req.params.verbEnding}'
+        ORDER BY random() LIMIT 50`
+      );
+      res.json(verbs.rows);
+    } catch (err) {
+      console.log(err.message);
+    }
   }
 });
 
 app.get("/verbs/:mood/:tense", async (req, res) => {
-  const table =
+  const tense = req.params.tense.split(" ").join("_");
+  if (
     req.params.mood === "infinito" ||
     req.params.mood === "participio" ||
     req.params.mood === "gerundio"
-      ? "conjugations_infinite"
-      : "conjugations_finite";
-
-  try {
-    const verbs = await pool.query(
-      `SELECT verbs.verb, subject_pronouns.pronoun as subject, ${table}.${req.params.mood}_${req.params.tense} as conjugation 
-      FROM ${table} 
-      JOIN subject_pronouns ON subject_id = subject_pronouns.id
-      JOIN verbs ON verb_id = verbs.id
-      ORDER BY random() LIMIT 50`
-    );
-    res.json(verbs.rows);
-  } catch (err) {
-    console.log(err.message);
+  ) {
+    try {
+      const verbs = await pool.query(
+        `SELECT verbs.verb, conjugations_nonfinite.${req.params.mood}_${tense} as conjugation 
+          FROM conjugations_nonfinite
+          JOIN verbs ON verb_id = verbs.id
+          ORDER BY random() LIMIT 50`
+      );
+      res.json(verbs.rows);
+    } catch (err) {
+      console.log(err.message);
+    }
+  } else if (req.params.mood === "imperativo") {
+    try {
+      const verbs =
+        await pool.query(`SELECT verbs.verb, subject_pronouns.pronoun as subject, conjugations_finite.imperativo_${tense} as conjugation 
+    FROM conjugations_finite 
+    JOIN subject_pronouns ON subject_id = subject_pronouns.id
+    JOIN verbs ON verb_id = verbs.id
+    WHERE conjugations_finite.imperativo_${tense} IS NOT NULL
+    ORDER BY random() LIMIT 50`);
+      res.json(verbs.rows);
+    } catch (err) {
+      console.log(err.message);
+    }
+  } else {
+    try {
+      const verbs = await pool.query(
+        `SELECT verbs.verb, subject_pronouns.pronoun as subject, conjugations_finite.${req.params.mood}_${tense} as conjugation 
+          FROM conjugations_finite 
+          JOIN subject_pronouns ON subject_id = subject_pronouns.id
+          JOIN verbs ON verb_id = verbs.id
+          ORDER BY random() LIMIT 50`
+      );
+      res.json(verbs.rows);
+    } catch (err) {
+      console.log(err.message);
+    }
   }
 });
 

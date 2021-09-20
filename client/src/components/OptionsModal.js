@@ -18,7 +18,7 @@ export default function OptionsModal({
     "trapassato prossimo",
     "passato remoto",
     "trapassato remoto",
-    "futuro",
+    "futuro semplice",
     "futuro anteriore",
   ];
   const congiuntivoTenses = ["presente", "passato", "imperfetto", "trapassato"];
