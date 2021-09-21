@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Game from "./Game";
 
@@ -35,16 +35,49 @@ describe("form", () => {
       verb: "mangiare",
     };
     const selectVerb = jest.fn();
-    render(<Game verbData={verbData} selectVerb={selectVerb}></Game>);
+    const isGameRunning = true;
+    render(
+      <Game
+        verbData={verbData}
+        selectVerb={selectVerb}
+        isGameRunning={isGameRunning}
+      ></Game>
+    );
 
     userEvent.type(screen.getByRole("textbox"), "mangi{enter}");
     expect(selectVerb).toHaveBeenCalledTimes(1);
   });
 });
 
+describe("input", () => {
+  test("is not disabled if game is running", () => {
+    const isGameRunning = true;
+    render(<Game isGameRunning={isGameRunning}></Game>);
+
+    userEvent.type(screen.getByRole("textbox"), "abc");
+    expect(screen.getByDisplayValue(/abc/i)).toBeInTheDocument();
+  });
+
+  test("is disabled if game is not running", () => {
+    const isGameRunning = false;
+    render(<Game isGameRunning={isGameRunning}></Game>);
+
+    userEvent.type(screen.getByRole("textbox"), "abc");
+    expect(screen.queryByDisplayValue(/abc/i)).not.toBeInTheDocument();
+  });
+
+  test("is given focus", () => {
+    const isGameRunning = true;
+    render(<Game isGameRunning={isGameRunning}></Game>);
+
+    expect(screen.getByRole("textbox")).toHaveFocus();
+  });
+});
+
 describe("accent buttons", () => {
   test("add the accent to input when clicked", () => {
-    render(<Game></Game>);
+    const isGameRunning = true;
+    render(<Game isGameRunning={isGameRunning}></Game>);
 
     userEvent.click(screen.getByRole("button", { name: /à/i }));
     userEvent.click(screen.getByRole("button", { name: /è/i }));
@@ -52,10 +85,20 @@ describe("accent buttons", () => {
   });
 
   test("give input focus when clicked", () => {
-    render(<Game></Game>);
+    const isGameRunning = true;
+    render(<Game isGameRunning={isGameRunning}></Game>);
 
     userEvent.click(screen.getByRole("button", { name: /à/i }));
     expect(screen.getByRole("textbox")).toHaveFocus();
+  });
+
+  test("are not clickable if the game is not running", () => {
+    const isGameRunning = false;
+    render(<Game isGameRunning={isGameRunning}></Game>);
+
+    userEvent.click(screen.getByRole("button", { name: /à/i }));
+    expect(screen.getByRole("textbox")).not.toHaveFocus();
+    expect(screen.queryByDisplayValue(/à/i)).not.toBeInTheDocument();
   });
 });
 
@@ -65,7 +108,8 @@ test("error message displays if the user input does not match the conjugation", 
     subject: "tu",
     verb: "mangiare",
   };
-  render(<Game verbData={verbData}></Game>);
+  const isGameRunning = true;
+  render(<Game verbData={verbData} isGameRunning={isGameRunning}></Game>);
 
   userEvent.type(screen.getByRole("textbox"), "parlo{enter}");
   expect(screen.getByText(/incorrect\. try again\./i)).toBeInTheDocument();

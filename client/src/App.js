@@ -12,6 +12,7 @@ function App() {
   const [selectedVerbEnding, setSelectedVerbEnding] = useState("");
   const [verbsData, setVerbsData] = useState([]);
   const [currentVerbData, setCurrentVerbData] = useState({});
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const isInitialMount = useRef(true);
 
@@ -24,7 +25,6 @@ function App() {
     setSelectedMood(mood);
     setSelectedTense(tense);
     setSelectedVerbEnding(verbEnding);
-    setIsGameRunning(true);
   };
 
   useEffect(() => {
@@ -50,6 +50,7 @@ function App() {
 
   useEffect(() => {
     selectVerb();
+    setIsGameOver(true);
   }, [verbsData]);
 
   return (
@@ -66,6 +67,9 @@ function App() {
         verbData={currentVerbData}
         selectVerb={selectVerb}
         isGameRunning={isGameRunning}
+        setIsGameRunning={setIsGameRunning}
+        isGameOver={isGameOver}
+        setIsGameOver={setIsGameOver}
       ></Game>
     </div>
   );

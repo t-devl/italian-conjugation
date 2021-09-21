@@ -6,8 +6,10 @@
 
 $savoy-blue: rgb(75, 97, 209);
 $italian-flag-red: rgb(205, 33, 42);
+$italian-flag-green: rgb(0, 140, 69);
 
 body {
+  min-width: 300px;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -41,6 +43,7 @@ body {
   min-height: 100vh;
   padding: 1rem;
   background-color: white;
+  z-index: 10;
 }
 
 .options-form {
@@ -77,6 +80,7 @@ body {
   margin-top: 1rem;
   border: 1px solid $savoy-blue;
   background: none;
+  font-size: 0.9rem;
   cursor: pointer;
 }
 
@@ -87,6 +91,9 @@ body {
 }
 
 .game {
+  position: relative;
+  min-height: 275px;
+  margin: 0 auto;
   padding: 0.5rem 1rem;
 }
 
@@ -124,6 +131,10 @@ body {
   outline: none;
 }
 
+.game__input:disabled {
+  border-color: grey;
+}
+
 .game__input--error:focus {
   border: 1px solid $italian-flag-red;
   border-radius: 2px;
@@ -137,9 +148,56 @@ body {
   cursor: pointer;
 }
 
+.game__accent-btn:disabled {
+  cursor: default;
+}
+
 .game__error-message {
   margin: 1rem 0;
   color: $italian-flag-red;
+}
+
+.timer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.timer__time-left {
+  font-size: 1.1rem;
+}
+
+.timer__btn {
+  padding: 0.5em 1em;
+  margin-right: 0.5rem;
+  background: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.timer__btn--start {
+  border: 1px solid $italian-flag-green;
+}
+
+.timer__btn--start:hover,
+.timer__btn--start:focus {
+  background-color: $italian-flag-green;
+  color: white;
+}
+
+.timer__btn--pause {
+  border: 1px solid $savoy-blue;
+}
+
+.timer__btn--pause:hover,
+.timer__btn--pause:focus {
+  background-color: $savoy-blue;
+  color: white;
 }
 
 @media (min-width: 700px) {

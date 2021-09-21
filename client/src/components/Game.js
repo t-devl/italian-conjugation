@@ -1,6 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
+import Timer from "./Timer";
 
-export default function Game({ mood, tense, verbData, selectVerb }) {
+export default function Game({
+  mood,
+  tense,
+  verbData,
+  selectVerb,
+  isGameRunning,
+  setIsGameRunning,
+  isGameOver,
+  setIsGameOver,
+}) {
   const [userInput, setUserInput] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const inputRef = useRef(null);
@@ -50,6 +60,7 @@ export default function Game({ mood, tense, verbData, selectVerb }) {
           className={`game__input ${errorMessage ? "game__input--error" : ""}`}
           ref={inputRef}
           value={userInput}
+          disabled={!isGameRunning}
           onChange={(e) => setUserInput(e.target.value)}
         ></input>
 
@@ -57,6 +68,7 @@ export default function Game({ mood, tense, verbData, selectVerb }) {
           <button
             className="game__accent-btn"
             type="button"
+            disabled={!isGameRunning}
             onClick={() => addAccent("à")}
           >
             à
@@ -64,6 +76,7 @@ export default function Game({ mood, tense, verbData, selectVerb }) {
           <button
             className="game__accent-btn"
             type="button"
+            disabled={!isGameRunning}
             onClick={() => addAccent("è")}
           >
             è
@@ -71,6 +84,7 @@ export default function Game({ mood, tense, verbData, selectVerb }) {
           <button
             className="game__accent-btn"
             type="button"
+            disabled={!isGameRunning}
             onClick={() => addAccent("ì")}
           >
             ì
@@ -78,6 +92,7 @@ export default function Game({ mood, tense, verbData, selectVerb }) {
           <button
             className="game__accent-btn"
             type="button"
+            disabled={!isGameRunning}
             onClick={() => addAccent("ò")}
           >
             ò
@@ -85,6 +100,7 @@ export default function Game({ mood, tense, verbData, selectVerb }) {
           <button
             className="game__accent-btn"
             type="button"
+            disabled={!isGameRunning}
             onClick={() => addAccent("ù")}
           >
             ù
@@ -94,6 +110,12 @@ export default function Game({ mood, tense, verbData, selectVerb }) {
           <p className="game__error-message">{errorMessage}</p>
         ) : null}
       </form>
+      <Timer
+        isGameRunning={isGameRunning}
+        setIsGameRunning={setIsGameRunning}
+        isGameOver={isGameOver}
+        setIsGameOver={setIsGameOver}
+      ></Timer>
     </div>
   );
 }
