@@ -11,8 +11,6 @@ function App() {
   const [selectedTense, setSelectedTense] = useState("");
   const [selectedVerbEnding, setSelectedVerbEnding] = useState("");
   const [verbsData, setVerbsData] = useState([]);
-  const [currentVerbData, setCurrentVerbData] = useState({});
-  const [isGameOver, setIsGameOver] = useState(false);
 
   const isInitialMount = useRef(true);
 
@@ -43,16 +41,6 @@ function App() {
     }
   }, [selectedMood, selectedTense, selectedVerbEnding]);
 
-  const selectVerb = () => {
-    let index = Math.floor(Math.random() * verbsData.length);
-    setCurrentVerbData(verbsData[index]);
-  };
-
-  useEffect(() => {
-    selectVerb();
-    setIsGameOver(true);
-  }, [verbsData]);
-
   return (
     <div className="App">
       <Header openOptionsModal={openOptionsModal}></Header>
@@ -64,12 +52,9 @@ function App() {
       <Game
         mood={selectedMood}
         tense={selectedTense}
-        verbData={currentVerbData}
-        selectVerb={selectVerb}
+        verbsData={verbsData}
         isGameRunning={isGameRunning}
         setIsGameRunning={setIsGameRunning}
-        isGameOver={isGameOver}
-        setIsGameOver={setIsGameOver}
       ></Game>
     </div>
   );

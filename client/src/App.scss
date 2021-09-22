@@ -92,7 +92,6 @@ body {
 
 .game {
   position: relative;
-  min-height: 275px;
   margin: 0 auto;
   padding: 0.5rem 1rem;
 }
@@ -153,15 +152,12 @@ body {
 }
 
 .game__error-message {
+  height: 1em;
   margin: 1rem 0;
   color: $italian-flag-red;
 }
 
 .timer {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -198,6 +194,12 @@ body {
 .timer__btn--pause:focus {
   background-color: $savoy-blue;
   color: white;
+}
+
+.score {
+  margin-top: 1.75rem;
+  font-size: 1.4rem;
+  text-align: center;
 }
 
 @media (min-width: 700px) {

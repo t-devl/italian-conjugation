@@ -4,71 +4,93 @@ import Game from "./Game";
 
 test("displays selected mood", () => {
   const mood = "indicativo";
-  render(<Game mood={mood}></Game>);
+  const verbsData = [];
+  render(<Game mood={mood} verbsData={verbsData}></Game>);
 
   expect(screen.getByText(/indicativo/i)).toBeInTheDocument();
 });
 
 test("displays selected tense", () => {
   const tense = "presente";
-  render(<Game tense={tense}></Game>);
+  const verbsData = [];
+  render(<Game tense={tense} verbsData={verbsData}></Game>);
 
   expect(screen.getByText(/presente/i)).toBeInTheDocument();
 });
 
 describe("form", () => {
-  test("receives and displays current verb", () => {
-    const verbData = {
-      conjugation: "mangi",
-      subject: "tu",
-      verb: "mangiare",
-    };
-    render(<Game verbData={verbData}></Game>);
+  test("displays current verb", () => {
+    const verbsData = [
+      {
+        conjugation: "mangi",
+        subject: "tu",
+        verb: "mangiare",
+      },
+    ];
+    render(<Game verbsData={verbsData}></Game>);
 
     expect(screen.getByText(/mangiare/i)).toBeInTheDocument();
   });
 
-  test("results in select verb function being called when submitted if the user input matches the conjugation", () => {
-    const verbData = {
-      conjugation: "mangi",
-      subject: "tu",
-      verb: "mangiare",
-    };
-    const selectVerb = jest.fn();
+  test("does not accept empty submitted user input", () => {
+    const verbsData = [];
     const isGameRunning = true;
-    render(
-      <Game
-        verbData={verbData}
-        selectVerb={selectVerb}
-        isGameRunning={isGameRunning}
-      ></Game>
-    );
+    render(<Game verbsData={verbsData} isGameRunning={isGameRunning}></Game>);
 
-    userEvent.type(screen.getByRole("textbox"), "mangi{enter}");
-    expect(selectVerb).toHaveBeenCalledTimes(1);
+    userEvent.type(screen.getByRole("textbox"), "{enter}");
+    expect(screen.getByText(/input cannot be empty\./i)).toBeInTheDocument();
+  });
+
+  test("does not accept only whitespace submitted user input", () => {
+    const verbsData = [];
+    const isGameRunning = true;
+    render(<Game verbsData={verbsData} isGameRunning={isGameRunning}></Game>);
+
+    userEvent.type(screen.getByRole("textbox"), "{space}{space}{space}{enter}");
+    expect(screen.getByText(/input cannot be empty\./i)).toBeInTheDocument();
+  });
+
+  test("only accepts letters for submitted user input", () => {
+    const verbsData = [];
+    const isGameRunning = true;
+    render(<Game verbsData={verbsData} isGameRunning={isGameRunning}></Game>);
+
+    userEvent.type(screen.getByRole("textbox"), "123{enter}");
+    expect(
+      screen.getByText(/input must be made up of letters\./i)
+    ).toBeInTheDocument();
+
+    userEvent.clear(screen.getByRole("textbox"));
+    userEvent.type(screen.getByRole("textbox"), "text");
+    expect(
+      screen.queryByText(/input must be made up of letters\./i)
+    ).not.toBeInTheDocument();
   });
 });
 
 describe("input", () => {
   test("is not disabled if game is running", () => {
+    const verbsData = [];
     const isGameRunning = true;
-    render(<Game isGameRunning={isGameRunning}></Game>);
+    render(<Game verbsData={verbsData} isGameRunning={isGameRunning}></Game>);
 
     userEvent.type(screen.getByRole("textbox"), "abc");
     expect(screen.getByDisplayValue(/abc/i)).toBeInTheDocument();
   });
 
   test("is disabled if game is not running", () => {
+    const verbsData = [];
     const isGameRunning = false;
-    render(<Game isGameRunning={isGameRunning}></Game>);
+    render(<Game verbsData={verbsData} isGameRunning={isGameRunning}></Game>);
 
     userEvent.type(screen.getByRole("textbox"), "abc");
     expect(screen.queryByDisplayValue(/abc/i)).not.toBeInTheDocument();
   });
 
   test("is given focus", () => {
+    const verbsData = [];
     const isGameRunning = true;
-    render(<Game isGameRunning={isGameRunning}></Game>);
+    render(<Game verbsData={verbsData} isGameRunning={isGameRunning}></Game>);
 
     expect(screen.getByRole("textbox")).toHaveFocus();
   });
@@ -76,8 +98,9 @@ describe("input", () => {
 
 describe("accent buttons", () => {
   test("add the accent to input when clicked", () => {
+    const verbsData = [];
     const isGameRunning = true;
-    render(<Game isGameRunning={isGameRunning}></Game>);
+    render(<Game verbsData={verbsData} isGameRunning={isGameRunning}></Game>);
 
     userEvent.click(screen.getByRole("button", { name: /à/i }));
     userEvent.click(screen.getByRole("button", { name: /è/i }));
@@ -85,16 +108,18 @@ describe("accent buttons", () => {
   });
 
   test("give input focus when clicked", () => {
+    const verbsData = [];
     const isGameRunning = true;
-    render(<Game isGameRunning={isGameRunning}></Game>);
+    render(<Game verbsData={verbsData} isGameRunning={isGameRunning}></Game>);
 
     userEvent.click(screen.getByRole("button", { name: /à/i }));
     expect(screen.getByRole("textbox")).toHaveFocus();
   });
 
   test("are not clickable if the game is not running", () => {
+    const verbsData = [];
     const isGameRunning = false;
-    render(<Game isGameRunning={isGameRunning}></Game>);
+    render(<Game verbsData={verbsData} isGameRunning={isGameRunning}></Game>);
 
     userEvent.click(screen.getByRole("button", { name: /à/i }));
     expect(screen.getByRole("textbox")).not.toHaveFocus();
@@ -103,13 +128,15 @@ describe("accent buttons", () => {
 });
 
 test("error message displays if the user input does not match the conjugation", () => {
-  const verbData = {
-    conjugation: "mangi",
-    subject: "tu",
-    verb: "mangiare",
-  };
+  const verbsData = [
+    {
+      conjugation: "mangi",
+      subject: "tu",
+      verb: "mangiare",
+    },
+  ];
   const isGameRunning = true;
-  render(<Game verbData={verbData} isGameRunning={isGameRunning}></Game>);
+  render(<Game verbsData={verbsData} isGameRunning={isGameRunning}></Game>);
 
   userEvent.type(screen.getByRole("textbox"), "parlo{enter}");
   expect(screen.getByText(/incorrect\. try again\./i)).toBeInTheDocument();

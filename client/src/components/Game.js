@@ -1,38 +1,79 @@
 import React, { useEffect, useState, useRef } from "react";
+import Score from "./Score";
 import Timer from "./Timer";
 
 export default function Game({
   mood,
   tense,
-  verbData,
-  selectVerb,
+  verbsData,
   isGameRunning,
   setIsGameRunning,
-  isGameOver,
-  setIsGameOver,
 }) {
   const [userInput, setUserInput] = useState("");
+  const [lastSubmittedAnswer, setLastSubmittedAnswer] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [numberOfCorrectAnswers, setNumberOfCorrectAnswers] = useState(0);
+  const [numberOfAttempts, setNumberOfAttempts] = useState(0);
+  const [currentVerbData, setCurrentVerbData] = useState(null);
+  const [isGameOver, setIsGameOver] = useState(false);
   const inputRef = useRef(null);
+  const inputPattern = new RegExp("^[a-zA-Z\\s]+$");
+
+  useEffect(() => {
+    if (!isGameOver) {
+      setNumberOfCorrectAnswers(0);
+      setNumberOfAttempts(0);
+    }
+  }, [isGameOver]);
 
   useEffect(() => {
     setUserInput("");
     setErrorMessage("");
     inputRef.current.focus();
-  }, [verbData]);
+    setNumberOfCorrectAnswers(0);
+    setNumberOfAttempts(0);
+    selectVerb();
+    setIsGameOver(true);
+  }, [verbsData]);
+
+  const selectVerb = () => {
+    let index = Math.floor(Math.random() * verbsData.length);
+    setCurrentVerbData(verbsData[index]);
+  };
 
   const addAccent = (letter) => {
     setUserInput(userInput + letter);
     inputRef.current.focus();
   };
 
+  const isInputValid = () => {
+    if (userInput.trim() === "") {
+      setErrorMessage("Input cannot be empty.");
+      return false;
+    }
+    if (!inputPattern.test(userInput)) {
+      setErrorMessage("Input must be made up of letters.");
+      return false;
+    }
+    if (userInput === lastSubmittedAnswer) {
+      setErrorMessage("Please enter a different answer.");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (userInput.toLowerCase() === verbData.conjugation) {
-      setUserInput("");
-      selectVerb();
-    } else {
-      setErrorMessage("Incorrect. Try again.");
+    setLastSubmittedAnswer(userInput);
+    if (isInputValid()) {
+      if (userInput.toLowerCase() === currentVerbData.conjugation) {
+        setNumberOfCorrectAnswers(numberOfCorrectAnswers + 1);
+        setUserInput("");
+        selectVerb();
+      } else {
+        setErrorMessage("Incorrect. Try again.");
+      }
+      setNumberOfAttempts(numberOfAttempts + 1);
     }
   };
 
@@ -50,10 +91,10 @@ export default function Game({
       </p>
       <form className="game__form" onSubmit={handleSubmit}>
         <label className="game__label">
-          {verbData
-            ? verbData.subject
-              ? `${verbData.verb} (${verbData.subject})`
-              : `${verbData.verb}`
+          {currentVerbData
+            ? currentVerbData.subject
+              ? `${currentVerbData.verb} (${currentVerbData.subject})`
+              : `${currentVerbData.verb}`
             : ""}
         </label>
         <input
@@ -106,9 +147,7 @@ export default function Game({
             ù
           </button>
         </div>
-        {errorMessage ? (
-          <p className="game__error-message">{errorMessage}</p>
-        ) : null}
+        <p className="game__error-message">{errorMessage}</p>
       </form>
       <Timer
         isGameRunning={isGameRunning}
@@ -116,6 +155,10 @@ export default function Game({
         isGameOver={isGameOver}
         setIsGameOver={setIsGameOver}
       ></Timer>
+      <Score
+        numerator={numberOfCorrectAnswers}
+        denominator={numberOfAttempts}
+      ></Score>
     </div>
   );
 }
