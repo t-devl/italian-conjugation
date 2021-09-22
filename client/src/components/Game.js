@@ -16,6 +16,7 @@ export default function Game({
   const [numberOfAttempts, setNumberOfAttempts] = useState(0);
   const [currentVerbData, setCurrentVerbData] = useState(null);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [indexOfLastVerb, setIndexOfLastVerb] = useState(null);
   const inputRef = useRef(null);
   const inputPattern = new RegExp("^[a-zA-Z\\s]+$");
 
@@ -38,7 +39,11 @@ export default function Game({
 
   const selectVerb = () => {
     let index = Math.floor(Math.random() * verbsData.length);
+    while (index === indexOfLastVerb) {
+      index = Math.floor(Math.random() * verbsData.length);
+    }
     setCurrentVerbData(verbsData[index]);
+    setIndexOfLastVerb(index);
   };
 
   const addAccent = (letter) => {
@@ -55,7 +60,10 @@ export default function Game({
       setErrorMessage("Input must be made up of letters.");
       return false;
     }
-    if (userInput === lastSubmittedAnswer) {
+    if (
+      userInput !== currentVerbData.conjugation &&
+      userInput === lastSubmittedAnswer
+    ) {
       setErrorMessage("Please enter a different answer.");
       return false;
     }
