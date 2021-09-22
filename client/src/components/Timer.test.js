@@ -10,7 +10,7 @@ describe("start button", () => {
     expect(screen.getByRole("button", { name: /start/i })).toBeInTheDocument();
   });
 
-  test("calls function to set game running state on click", () => {
+  test("calls function to set game running state on first click", () => {
     const setIsGameRunning = jest.fn();
     const setIsGameOver = jest.fn();
     render(

@@ -11,11 +11,15 @@ export default function Timer({
   const [timeLeftInMilliseconds, setTimeLeftInMilliseconds] = useState(300000);
   const [minutesLeft, setMinutesLeft] = useState(5);
   const [secondsLeft, setSecondsLeft] = useState(0);
+  const [hasTimerStarted, setHasTimerStarted] = useState(false);
 
   const startTimer = () => {
+    if (!hasTimerStarted) {
+      setHasTimerStarted(true);
+      setIsGameOver(false);
+    }
     setStartTime(Date.now());
     setIsGameRunning(true);
-    setIsGameOver(false);
   };
 
   const pauseTimer = () => {
@@ -27,6 +31,8 @@ export default function Timer({
     let interval = null;
     if (timeLeftInMilliseconds < 1000) {
       setIsGameRunning(false);
+      setIsGameOver(true);
+      setHasTimerStarted(false);
       clearInterval(interval);
     } else if (isGameRunning) {
       interval = setInterval(() => {
@@ -54,6 +60,7 @@ export default function Timer({
       setTimeLeftInMilliseconds(300000);
       setMinutesLeft(5);
       setSecondsLeft(0);
+      setHasTimerStarted(false);
     }
   }, [isGameOver]);
 
