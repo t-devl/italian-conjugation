@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import RevealAnswer from "./RevealAnswer";
 import Score from "./Score";
 import Timer from "./Timer";
 
@@ -17,6 +18,8 @@ export default function Game({
   const [currentVerbData, setCurrentVerbData] = useState(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [indexOfLastVerb, setIndexOfLastVerb] = useState(null);
+  const [isAnswerAvailable, setIsAnswerAvailable] = useState(false);
+  const [isAnswerVisible, setIsAnswerVisible] = useState(false);
   const inputRef = useRef(null);
   const inputPattern = new RegExp("^[a-zA-Z\\s]+$");
 
@@ -44,6 +47,12 @@ export default function Game({
     }
     setCurrentVerbData(verbsData[index]);
     setIndexOfLastVerb(index);
+    if (isAnswerAvailable) {
+      setIsAnswerAvailable(false);
+    }
+    if (isAnswerVisible) {
+      setIsAnswerVisible(false);
+    }
   };
 
   const addAccent = (letter) => {
@@ -75,11 +84,14 @@ export default function Game({
     setLastSubmittedAnswer(userInput);
     if (isInputValid()) {
       if (userInput.toLowerCase() === currentVerbData.conjugation) {
-        setNumberOfCorrectAnswers(numberOfCorrectAnswers + 1);
+        if (!isAnswerVisible) {
+          setNumberOfCorrectAnswers(numberOfCorrectAnswers + 1);
+        }
         setUserInput("");
         selectVerb();
       } else {
         setErrorMessage("Incorrect. Try again.");
+        setIsAnswerAvailable(true);
       }
       setNumberOfAttempts(numberOfAttempts + 1);
     }
@@ -167,6 +179,13 @@ export default function Game({
         numerator={numberOfCorrectAnswers}
         denominator={numberOfAttempts}
       ></Score>
+      {isAnswerAvailable && isGameRunning ? (
+        <RevealAnswer
+          answer={currentVerbData.conjugation}
+          isAnswerVisible={isAnswerVisible}
+          setIsAnswerVisible={setIsAnswerVisible}
+        ></RevealAnswer>
+      ) : null}
     </div>
   );
 }

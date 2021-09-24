@@ -202,6 +202,30 @@ body {
   text-align: center;
 }
 
+.reveal-answer {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.reveal-answer__btn {
+  padding: 0.5em 1em;
+  border: 1px solid $savoy-blue;
+  background: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.reveal-answer__btn:hover,
+.reveal-answer__btn:focus {
+  background-color: $savoy-blue;
+  color: white;
+}
+
+.reveal-answer__answer {
+  margin-top: 0.25rem;
+  font-size: 1.2rem;
+}
+
 @media (min-width: 700px) {
   .game__input {
     font-size: 1.5rem;
