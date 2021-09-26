@@ -79,7 +79,7 @@ export default function OptionsModal({
           onSubmit={handleSubmit}
         >
           <label className="options-form__label" htmlFor="mood">
-            Select a mood
+            Mood
           </label>
           <div className="options-form__select-container">
             <select
@@ -113,7 +113,7 @@ export default function OptionsModal({
           </div>
           <div className="options-form__select-container">
             <label className="options-form__label" htmlFor="tense">
-              Select a tense
+              Tense
             </label>
             <select
               className="options-form__select"
@@ -126,7 +126,7 @@ export default function OptionsModal({
           </div>
           <div className="options-form__select-container">
             <label className="options-form__label" htmlFor="verb-ending">
-              Select a verb ending
+              Verb ending
             </label>
             <select
               className="options-form__select options-form__select--lowercase"
