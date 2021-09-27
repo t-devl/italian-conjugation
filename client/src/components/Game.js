@@ -18,6 +18,7 @@ export default function Game({
   const [currentVerbData, setCurrentVerbData] = useState(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [indexOfLastVerb, setIndexOfLastVerb] = useState(null);
+  const [answer, setAnswer] = useState([]);
   const [isAnswerAvailable, setIsAnswerAvailable] = useState(false);
   const [isAnswerVisible, setIsAnswerVisible] = useState(false);
   const inputRef = useRef(null);
@@ -39,6 +40,18 @@ export default function Game({
     selectVerb();
     setIsGameOver(true);
   }, [verbsData]);
+
+  useEffect(() => {
+    if (currentVerbData) {
+      setAnswer(currentVerbData.conjugation.split("/"));
+    }
+  }, [currentVerbData]);
+
+  useEffect(() => {
+    if (errorMessage) {
+      setErrorMessage("");
+    }
+  }, [userInput]);
 
   const selectVerb = () => {
     let index = Math.floor(Math.random() * verbsData.length);
@@ -79,11 +92,20 @@ export default function Game({
     return true;
   };
 
+  const isAnswerCorrect = () => {
+    for (let i = 0; i < answer.length; i++) {
+      if (userInput.toLowerCase() === answer[i]) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setLastSubmittedAnswer(userInput);
     if (isInputValid()) {
-      if (userInput.toLowerCase() === currentVerbData.conjugation) {
+      if (isAnswerCorrect()) {
         if (!isAnswerVisible) {
           setNumberOfCorrectAnswers(numberOfCorrectAnswers + 1);
         }
@@ -96,12 +118,6 @@ export default function Game({
       setNumberOfAttempts(numberOfAttempts + 1);
     }
   };
-
-  useEffect(() => {
-    if (errorMessage) {
-      setErrorMessage("");
-    }
-  }, [userInput]);
 
   return (
     <div className="game">
