@@ -8,6 +8,7 @@ export default function OptionsModal({
   const [mood, setMood] = useState("indicativo");
   const [tense, setTense] = useState("presente");
   const [verbEnding, setVerbEnding] = useState("are");
+  const [pattern, setPattern] = useState("regular");
   const [tenseOptions, setTenseOptions] = useState([]);
   const [displayedTenseOptions, setDisplayedTenseOptions] = useState([]);
 
@@ -68,7 +69,7 @@ export default function OptionsModal({
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsActive(false);
-    applySelections(mood, tense, verbEnding);
+    applySelections(mood, tense, verbEnding, pattern);
   };
 
   if (isActive) {
@@ -78,10 +79,10 @@ export default function OptionsModal({
           className="options-modal__options-form options-form"
           onSubmit={handleSubmit}
         >
-          <label className="options-form__label" htmlFor="mood">
-            Mood
-          </label>
           <div className="options-form__select-container">
+            <label className="options-form__label" htmlFor="mood">
+              Mood
+            </label>
             <select
               className="options-form__select"
               id="mood"
@@ -145,6 +146,27 @@ export default function OptionsModal({
               </option>
               <option className="options-form__option" value="all">
                 all verb endings
+              </option>
+            </select>
+          </div>
+          <div className="options-form__select-container">
+            <label className="options-form__label" htmlFor="pattern">
+              Pattern
+            </label>
+            <select
+              className="options-form__select options-form__select--lowercase"
+              id="pattern"
+              value={pattern}
+              onChange={(e) => setPattern(e.target.value)}
+            >
+              <option className="options-form__option" value="regular">
+                Regular
+              </option>
+              <option className="options-form__option" value="irregular">
+                Irregular
+              </option>
+              <option className="options-form__option" value="both">
+                Regular + irregular
               </option>
             </select>
           </div>

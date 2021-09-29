@@ -10,6 +10,7 @@ function App() {
   const [selectedMood, setSelectedMood] = useState("");
   const [selectedTense, setSelectedTense] = useState("");
   const [selectedVerbEnding, setSelectedVerbEnding] = useState("");
+  const [selectedPattern, setSelectedPattern] = useState("");
   const [verbsData, setVerbsData] = useState([]);
 
   const isInitialMount = useRef(true);
@@ -19,27 +20,28 @@ function App() {
     setIsGameRunning(false);
   };
 
-  const changeOptions = (mood, tense, verbEnding) => {
+  const changeOptions = (mood, tense, verbEnding, pattern) => {
     setSelectedMood(mood);
     setSelectedTense(tense);
     setSelectedVerbEnding(verbEnding);
+    setSelectedPattern(pattern);
   };
 
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
-    } else if (selectedVerbEnding === "all") {
+    } else if (selectedVerbEnding === "all" && selectedPattern === "both") {
       fetch(`http://localhost:5000/verbs/${selectedMood}/${selectedTense}`)
         .then((res) => res.json())
         .then((data) => setVerbsData(data));
     } else {
       fetch(
-        `http://localhost:5000/verbs/${selectedMood}/${selectedTense}/${selectedVerbEnding}`
+        `http://localhost:5000/verbs/${selectedMood}/${selectedTense}/${selectedVerbEnding}/${selectedPattern}`
       )
         .then((res) => res.json())
         .then((data) => setVerbsData(data));
     }
-  }, [selectedMood, selectedTense, selectedVerbEnding]);
+  }, [selectedMood, selectedTense, selectedVerbEnding, selectedPattern]);
 
   return (
     <div className="App">

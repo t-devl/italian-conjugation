@@ -15,8 +15,17 @@ const pool = new Pool({
   port: process.env.DBPORT,
 });
 
-app.get("/verbs/:mood/:tense/:verbEnding", async (req, res) => {
+app.get("/verbs/:mood/:tense/:verbEnding/:pattern", async (req, res) => {
   const tense = req.params.tense.split(" ").join("_");
+  let conditions = [];
+  if (req.params.verbEnding !== "all") {
+    conditions.push(`verbs.verb_ending = '${req.params.verbEnding}'`);
+  }
+  if (req.params.pattern !== "both") {
+    const isRegular = req.params.pattern === "regular";
+    conditions.push(`verbs.is_regular = '${isRegular}'`);
+  }
+
   if (
     req.params.mood === "infinito" ||
     req.params.mood === "participio" ||
@@ -24,10 +33,12 @@ app.get("/verbs/:mood/:tense/:verbEnding", async (req, res) => {
   ) {
     try {
       const verbs = await pool.query(
-        `SELECT verbs.verb, conjugations_nonfinite.${req.params.mood}_${tense} as conjugation 
+        `SELECT verbs.verb, conjugations_nonfinite.${
+          req.params.mood
+        }_${tense} as conjugation
         FROM conjugations_nonfinite 
         JOIN verbs ON verb_id = verbs.id
-        WHERE verbs.verb_ending = '${req.params.verbEnding}'
+        WHERE ${conditions.join(" AND ")}
         ORDER BY random() LIMIT 50`
       );
       res.json(verbs.rows);
@@ -37,11 +48,11 @@ app.get("/verbs/:mood/:tense/:verbEnding", async (req, res) => {
   } else if (req.params.mood === "imperativo") {
     try {
       const verbs =
-        await pool.query(`SELECT verbs.verb,  subject_pronouns.pronoun as subject, conjugations_finite.imperativo_${tense} as conjugation 
+        await pool.query(`SELECT verbs.verb,  subject_pronouns.pronoun as subject, conjugations_finite.imperativo_${tense} as conjugation
     FROM conjugations_finite 
     JOIN subject_pronouns ON subject_id = subject_pronouns.id
     JOIN verbs ON verb_id = verbs.id
-    WHERE verbs.verb_ending = '${req.params.verbEnding}'
+    WHERE ${conditions.join(" AND ")}
     AND conjugations_finite.imperativo_${tense} IS NOT NULL
     ORDER BY random() LIMIT 50`);
       res.json(verbs.rows);
@@ -51,11 +62,13 @@ app.get("/verbs/:mood/:tense/:verbEnding", async (req, res) => {
   } else {
     try {
       const verbs = await pool.query(
-        `SELECT verbs.verb, subject_pronouns.pronoun as subject, conjugations_finite.${req.params.mood}_${tense} as conjugation 
+        `SELECT verbs.verb, subject_pronouns.pronoun as subject, conjugations_finite.${
+          req.params.mood
+        }_${tense} as conjugation
         FROM conjugations_finite 
         JOIN subject_pronouns ON subject_id = subject_pronouns.id
         JOIN verbs ON verb_id = verbs.id
-        WHERE verbs.verb_ending = '${req.params.verbEnding}'
+        WHERE ${conditions.join(" AND ")}
         ORDER BY random() LIMIT 50`
       );
       res.json(verbs.rows);
@@ -74,7 +87,7 @@ app.get("/verbs/:mood/:tense", async (req, res) => {
   ) {
     try {
       const verbs = await pool.query(
-        `SELECT verbs.verb, conjugations_nonfinite.${req.params.mood}_${tense} as conjugation 
+        `SELECT verbs.verb, conjugations_nonfinite.${req.params.mood}_${tense} as conjugation
           FROM conjugations_nonfinite
           JOIN verbs ON verb_id = verbs.id
           ORDER BY random() LIMIT 50`
@@ -86,7 +99,7 @@ app.get("/verbs/:mood/:tense", async (req, res) => {
   } else if (req.params.mood === "imperativo") {
     try {
       const verbs =
-        await pool.query(`SELECT verbs.verb, subject_pronouns.pronoun as subject, conjugations_finite.imperativo_${tense} as conjugation 
+        await pool.query(`SELECT verbs.verb, subject_pronouns.pronoun as subject, conjugations_finite.imperativo_${tense} as conjugation
     FROM conjugations_finite 
     JOIN subject_pronouns ON subject_id = subject_pronouns.id
     JOIN verbs ON verb_id = verbs.id
@@ -99,7 +112,7 @@ app.get("/verbs/:mood/:tense", async (req, res) => {
   } else {
     try {
       const verbs = await pool.query(
-        `SELECT verbs.verb, subject_pronouns.pronoun as subject, conjugations_finite.${req.params.mood}_${tense} as conjugation 
+        `SELECT verbs.verb, subject_pronouns.pronoun as subject, conjugations_finite.${req.params.mood}_${tense} as conjugation
           FROM conjugations_finite 
           JOIN subject_pronouns ON subject_id = subject_pronouns.id
           JOIN verbs ON verb_id = verbs.id
