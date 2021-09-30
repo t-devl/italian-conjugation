@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import AnsweredIncorrectlyModal from "./AnsweredIncorrectlyModal";
 import RevealAnswer from "./RevealAnswer";
 import Score from "./Score";
 import Timer from "./Timer";
@@ -21,13 +22,32 @@ export default function Game({
   const [answer, setAnswer] = useState([]);
   const [isAnswerAvailable, setIsAnswerAvailable] = useState(false);
   const [isAnswerVisible, setIsAnswerVisible] = useState(false);
+  const [answeredIncorrectly, setAnsweredIncorrectly] = useState({});
+  const [areIncorrectAnswersVisible, setAreIncorrectAnswersVisible] =
+    useState(false);
+  const [isVerbDataUpdated, setIsVerbDataUpdated] = useState(false);
   const inputRef = useRef(null);
   const inputPattern = new RegExp("^[a-zA-Z\\s]+$");
 
   useEffect(() => {
-    if (!isGameOver) {
-      setNumberOfCorrectAnswers(0);
-      setNumberOfAttempts(0);
+    if (isGameOver) {
+      setUserInput("");
+      setErrorMessage("");
+    } else {
+      if (!isVerbDataUpdated) {
+        setNumberOfCorrectAnswers(0);
+        setNumberOfAttempts(0);
+        setAnsweredIncorrectly({});
+        setAreIncorrectAnswersVisible(false);
+        if (isAnswerAvailable) {
+          setIsAnswerAvailable(false);
+        }
+        if (isAnswerVisible) {
+          setIsAnswerVisible(false);
+        }
+      } else {
+        setIsVerbDataUpdated(false);
+      }
     }
   }, [isGameOver]);
 
@@ -37,8 +57,11 @@ export default function Game({
     inputRef.current.focus();
     setNumberOfCorrectAnswers(0);
     setNumberOfAttempts(0);
+    setAnsweredIncorrectly({});
+    setAreIncorrectAnswersVisible(false);
     selectVerb();
     setIsGameOver(true);
+    setIsVerbDataUpdated(true);
   }, [verbsData]);
 
   useEffect(() => {
@@ -114,6 +137,20 @@ export default function Game({
       } else {
         setErrorMessage("Incorrect. Try again.");
         setIsAnswerAvailable(true);
+        setAnsweredIncorrectly(
+          answeredIncorrectly[currentVerbData.conjugation]
+            ? {
+                ...answeredIncorrectly,
+                [currentVerbData.conjugation]: [
+                  currentVerbData,
+                  answeredIncorrectly[currentVerbData.conjugation][1] + 1,
+                ],
+              }
+            : {
+                ...answeredIncorrectly,
+                [currentVerbData.conjugation]: [currentVerbData, 1],
+              }
+        );
       }
       setNumberOfAttempts(numberOfAttempts + 1);
     }
@@ -201,6 +238,20 @@ export default function Game({
           isAnswerVisible={isAnswerVisible}
           setIsAnswerVisible={setIsAnswerVisible}
         ></RevealAnswer>
+      ) : null}
+      {isGameOver && Object.keys(answeredIncorrectly).length > 0 ? (
+        <button
+          className="game__modal-btn"
+          onClick={() => setAreIncorrectAnswersVisible(true)}
+        >
+          View the ones you got wrong
+        </button>
+      ) : null}
+      {areIncorrectAnswersVisible ? (
+        <AnsweredIncorrectlyModal
+          conjugationsData={answeredIncorrectly}
+          setIsVisible={setAreIncorrectAnswersVisible}
+        ></AnsweredIncorrectlyModal>
       ) : null}
     </div>
   );

@@ -42,6 +42,7 @@ $border-radius: 3px;
   --key-border: black;
   --key-border-disabled: #{$grey};
   --key-highlight: #{$savoy-blue};
+  --answered-incorrectly-background: white;
 }
 
 .dark-mode {
@@ -63,6 +64,7 @@ $border-radius: 3px;
   --key-border: #{$grey};
   --key-border-disabled: #{lighten($dark-grey, 20)};
   --key-highlight: #{$savoy-blue-desaturated};
+  --answered-incorrectly-background: #{lighten($dark-grey, 5)};
 }
 
 body,
@@ -196,13 +198,13 @@ body {
 }
 
 .game {
+  text-align: center;
   padding: 0.5rem 1rem;
   margin: 0 auto;
 }
 
 .game__chosen-options {
   font-size: 1.2rem;
-  text-align: center;
   text-transform: capitalize;
 }
 
@@ -334,7 +336,6 @@ body {
 
 .reveal-answer {
   margin-top: 1rem;
-  text-align: center;
 }
 
 .reveal-answer__btn {
@@ -356,6 +357,76 @@ body {
 .reveal-answer__answer {
   margin-top: 0.25rem;
   font-size: 1.2rem;
+}
+
+.game__modal-btn {
+  margin-top: 1rem;
+  border: none;
+  background: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    color: var(--blue);
+  }
+}
+
+.answered-incorrectly {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.527);
+}
+
+.answered-incorrectly__modal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 1em;
+  border-radius: $border-radius;
+  background-color: var(--answered-incorrectly-background);
+}
+
+.answered-incorrectly__title {
+  font-weight: bold;
+}
+
+.answered-incorrectly__list {
+  max-height: 75vh;
+  min-height: 200px;
+  list-style: none;
+  overflow: auto;
+}
+
+.answered-incorrectly__item {
+  margin: 0.1em 0;
+}
+
+.answered-incorrectly__close-btn {
+  align-self: center;
+  padding: 0.5em 1em;
+  margin-top: 0.5em;
+  border: 1px solid var(--red);
+  border-radius: $border-radius;
+  background: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    background-color: var(--red);
+    color: white;
+  }
 }
 
 @media (min-width: 700px) {
