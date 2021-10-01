@@ -27,7 +27,7 @@ export default function Game({
     useState(false);
   const [isVerbDataUpdated, setIsVerbDataUpdated] = useState(false);
   const inputRef = useRef(null);
-  const inputPattern = new RegExp("^[a-zA-Z\\s]+$");
+  const inputPattern = /^\p{L}+(\s?(\p{L}+|'))*$/u;
 
   useEffect(() => {
     if (isGameOver) {
@@ -102,7 +102,9 @@ export default function Game({
       return false;
     }
     if (!inputPattern.test(userInput)) {
-      setErrorMessage("Input must be made up of letters.");
+      setErrorMessage(
+        "Input can only include letters, single spaces and apostrophes. Input must start with a letter and end with a letter or an apostrophe."
+      );
       return false;
     }
     if (

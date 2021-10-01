@@ -51,7 +51,11 @@ describe("form", () => {
   });
 
   test("only accepts letters for submitted user input", () => {
-    const verbsData = [];
+    const verbsData = [
+      {
+        conjugation: "conjugation",
+      },
+    ];
     const isGameRunning = true;
     render(<Game verbsData={verbsData} isGameRunning={isGameRunning}></Game>);
 
@@ -61,7 +65,7 @@ describe("form", () => {
     ).toBeInTheDocument();
 
     userEvent.clear(screen.getByRole("textbox"));
-    userEvent.type(screen.getByRole("textbox"), "text");
+    userEvent.type(screen.getByRole("textbox"), "tèxt{enter}");
     expect(
       screen.queryByText(/input must be made up of letters\./i)
     ).not.toBeInTheDocument();
