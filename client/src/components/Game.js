@@ -27,7 +27,7 @@ export default function Game({
     useState(false);
   const [isVerbDataUpdated, setIsVerbDataUpdated] = useState(false);
   const inputRef = useRef(null);
-  const inputPattern = /^\p{L}+(\s?(\p{L}+|'))*$/u;
+  const inputPattern = /^\p{L}+((\s|\/)?(\p{L}+|'))*$/u;
 
   useEffect(() => {
     if (isGameOver) {
@@ -118,12 +118,13 @@ export default function Game({
   };
 
   const isAnswerCorrect = () => {
-    for (let i = 0; i < answer.length; i++) {
-      if (userInput.toLowerCase() === answer[i]) {
-        return true;
+    let userAnswer = userInput.toLowerCase().split("/");
+    for (let i = 0; i < userAnswer.length; i++) {
+      if (!answer.includes(userAnswer[i])) {
+        return false;
       }
     }
-    return false;
+    return true;
   };
 
   const handleSubmit = (e) => {
