@@ -31,12 +31,12 @@ function App() {
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else if (selectedVerbEnding === "all" && selectedPattern === "both") {
-      fetch(`http://localhost:5000/verbs/${selectedMood}/${selectedTense}`)
+      fetch(`/verbs/${selectedMood}/${selectedTense}`)
         .then((res) => res.json())
         .then((data) => setVerbsData(data));
     } else {
       fetch(
-        `http://localhost:5000/verbs/${selectedMood}/${selectedTense}/${selectedVerbEnding}/${selectedPattern}`
+        `/verbs/${selectedMood}/${selectedTense}/${selectedVerbEnding}/${selectedPattern}`
       )
         .then((res) => res.json())
         .then((data) => setVerbsData(data));

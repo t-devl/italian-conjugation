@@ -1,19 +1,31 @@
 const express = require("express");
 const cors = require("cors");
 const { Pool } = require("pg");
+const path = require("path");
 
 require("dotenv").config();
 
 const app = express();
 app.use(cors());
 
-const pool = new Pool({
+const devConfig = {
   user: process.env.USER,
   host: process.env.HOST,
   database: process.env.DATABASE,
   password: process.env.PASSWORD,
   port: process.env.DBPORT,
-});
+};
+
+const proConfig = {
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+};
+
+const pool = new Pool(
+  process.env.NODE_ENV === "production" ? proConfig : devConfig
+);
 
 app.get("/verbs/:mood/:tense/:verbEnding/:pattern", async (req, res) => {
   const tense = req.params.tense.split(" ").join("_");
@@ -124,6 +136,14 @@ app.get("/verbs/:mood/:tense", async (req, res) => {
     }
   }
 });
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "client/build")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client/build/index.html"));
+  });
+}
 
 const port = process.env.PORT || 5000;
 
