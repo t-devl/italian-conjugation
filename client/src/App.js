@@ -11,7 +11,7 @@ function App() {
   const [selectedTense, setSelectedTense] = useState("");
   const [selectedVerbEnding, setSelectedVerbEnding] = useState("");
   const [selectedPattern, setSelectedPattern] = useState("");
-  const [verbsData, setVerbsData] = useState([]);
+  const [fetchedVerbsData, setFetchedVerbsData] = useState([]);
 
   const isInitialMount = useRef(true);
 
@@ -33,13 +33,13 @@ function App() {
     } else if (selectedVerbEnding === "all" && selectedPattern === "both") {
       fetch(`/verbs/${selectedMood}/${selectedTense}`)
         .then((res) => res.json())
-        .then((data) => setVerbsData(data));
+        .then((data) => setFetchedVerbsData(data));
     } else {
       fetch(
         `/verbs/${selectedMood}/${selectedTense}/${selectedVerbEnding}/${selectedPattern}`
       )
         .then((res) => res.json())
-        .then((data) => setVerbsData(data));
+        .then((data) => setFetchedVerbsData(data));
     }
   }, [selectedMood, selectedTense, selectedVerbEnding, selectedPattern]);
 
@@ -54,7 +54,7 @@ function App() {
       <Game
         mood={selectedMood}
         tense={selectedTense}
-        verbsData={verbsData}
+        fetchedVerbsData={fetchedVerbsData}
         isGameRunning={isGameRunning}
         setIsGameRunning={setIsGameRunning}
       ></Game>

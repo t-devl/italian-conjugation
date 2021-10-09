@@ -53,7 +53,7 @@ app.get("/verbs/:mood/:tense/:verbEnding/:pattern", async (req, res) => {
         WHERE ${conditions.join(" AND ")}
         ORDER BY random() LIMIT 50`
       );
-      res.json(verbs.rows);
+      res.json(verbs.rows.map((obj) => ({ ...obj, weight: 3 })));
     } catch (err) {
       console.log(err.message);
     }
@@ -67,7 +67,7 @@ app.get("/verbs/:mood/:tense/:verbEnding/:pattern", async (req, res) => {
     WHERE ${conditions.join(" AND ")}
     AND conjugations_finite.imperativo_${tense} IS NOT NULL
     ORDER BY random() LIMIT 50`);
-      res.json(verbs.rows);
+      res.json(verbs.rows.map((obj) => ({ ...obj, weight: 3 })));
     } catch (err) {
       console.log(err.message);
     }
@@ -83,7 +83,7 @@ app.get("/verbs/:mood/:tense/:verbEnding/:pattern", async (req, res) => {
         WHERE ${conditions.join(" AND ")}
         ORDER BY random() LIMIT 50`
       );
-      res.json(verbs.rows);
+      res.json(verbs.rows.map((obj) => ({ ...obj, weight: 3 })));
     } catch (err) {
       console.log(err.message);
     }
@@ -104,7 +104,7 @@ app.get("/verbs/:mood/:tense", async (req, res) => {
           JOIN verbs ON verb_id = verbs.id
           ORDER BY random() LIMIT 50`
       );
-      res.json(verbs.rows);
+      res.json(verbs.rows.map((obj) => ({ ...obj, weight: 3 })));
     } catch (err) {
       console.log(err.message);
     }
@@ -117,7 +117,7 @@ app.get("/verbs/:mood/:tense", async (req, res) => {
     JOIN verbs ON verb_id = verbs.id
     WHERE conjugations_finite.imperativo_${tense} IS NOT NULL
     ORDER BY random() LIMIT 50`);
-      res.json(verbs.rows);
+      res.json(verbs.rows.map((obj) => ({ ...obj, weight: 3 })));
     } catch (err) {
       console.log(err.message);
     }
@@ -130,7 +130,7 @@ app.get("/verbs/:mood/:tense", async (req, res) => {
           JOIN verbs ON verb_id = verbs.id
           ORDER BY random() LIMIT 50`
       );
-      res.json(verbs.rows);
+      res.json(verbs.rows.map((obj) => ({ ...obj, weight: 3 })));
     } catch (err) {
       console.log(err.message);
     }

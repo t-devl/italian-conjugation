@@ -7,7 +7,7 @@ import Timer from "./Timer";
 export default function Game({
   mood,
   tense,
-  verbsData,
+  fetchedVerbsData,
   isGameRunning,
   setIsGameRunning,
 }) {
@@ -16,6 +16,7 @@ export default function Game({
   const [errorMessage, setErrorMessage] = useState("");
   const [numberOfCorrectAnswers, setNumberOfCorrectAnswers] = useState(0);
   const [numberOfAttempts, setNumberOfAttempts] = useState(0);
+  const [verbsData, setVerbsData] = useState([]);
   const [currentVerbData, setCurrentVerbData] = useState(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [indexOfLastVerb, setIndexOfLastVerb] = useState(null);
@@ -25,7 +26,8 @@ export default function Game({
   const [answeredIncorrectly, setAnsweredIncorrectly] = useState({});
   const [areIncorrectAnswersVisible, setAreIncorrectAnswersVisible] =
     useState(false);
-  const [isVerbDataUpdated, setIsVerbDataUpdated] = useState(false);
+  const [isFetchedVerbsDataUpdated, setIsFetchedVerbsDataUpdated] =
+    useState(false);
   const inputRef = useRef(null);
   const inputPattern = /^\p{L}+((\s|\/)?(\p{L}+|'))*$/u;
 
@@ -34,7 +36,7 @@ export default function Game({
       setUserInput("");
       setErrorMessage("");
     } else {
-      if (!isVerbDataUpdated) {
+      if (!isFetchedVerbsDataUpdated) {
         setNumberOfCorrectAnswers(0);
         setNumberOfAttempts(0);
         setAnsweredIncorrectly({});
@@ -46,12 +48,13 @@ export default function Game({
           setIsAnswerVisible(false);
         }
       } else {
-        setIsVerbDataUpdated(false);
+        setIsFetchedVerbsDataUpdated(false);
       }
     }
   }, [isGameOver]);
 
   useEffect(() => {
+    setVerbsData(fetchedVerbsData);
     setUserInput("");
     setErrorMessage("");
     inputRef.current.focus();
@@ -59,10 +62,9 @@ export default function Game({
     setNumberOfAttempts(0);
     setAnsweredIncorrectly({});
     setAreIncorrectAnswersVisible(false);
-    selectVerb();
     setIsGameOver(true);
-    setIsVerbDataUpdated(true);
-  }, [verbsData]);
+    setIsFetchedVerbsDataUpdated(true);
+  }, [fetchedVerbsData]);
 
   useEffect(() => {
     if (currentVerbData) {
@@ -71,15 +73,21 @@ export default function Game({
   }, [currentVerbData]);
 
   useEffect(() => {
+    if (verbsData.length > 0) {
+      selectVerb();
+    }
+  }, [verbsData]);
+
+  useEffect(() => {
     if (errorMessage) {
       setErrorMessage("");
     }
   }, [userInput]);
 
   const selectVerb = () => {
-    let index = Math.floor(Math.random() * verbsData.length);
+    let index = getIndex(verbsData);
     while (index === indexOfLastVerb) {
-      index = Math.floor(Math.random() * verbsData.length);
+      index = getIndex(verbsData);
     }
     setCurrentVerbData(verbsData[index]);
     setIndexOfLastVerb(index);
@@ -90,6 +98,18 @@ export default function Game({
       setIsAnswerVisible(false);
     }
   };
+
+  function getIndex(arr) {
+    let sumOfWeights = arr.reduce((a, b) => a + b["weight"], 0);
+    let randomNum = Math.floor(Math.random() * sumOfWeights);
+
+    for (let i = 0; i < arr.length; i++) {
+      sumOfWeights -= arr[i].weight;
+      if (randomNum >= sumOfWeights) {
+        return i;
+      }
+    }
+  }
 
   const addAccent = (letter) => {
     setUserInput(userInput + letter);
@@ -135,8 +155,18 @@ export default function Game({
         if (!isAnswerVisible) {
           setNumberOfCorrectAnswers(numberOfCorrectAnswers + 1);
         }
+        if (currentVerbData["weight"] > 1 && !isAnswerAvailable) {
+          let newVerbData = { ...currentVerbData };
+          newVerbData["weight"]--;
+          setVerbsData(
+            verbsData.map((obj, index) =>
+              index === verbsData.indexOf(currentVerbData) ? newVerbData : obj
+            )
+          );
+        } else {
+          selectVerb();
+        }
         setUserInput("");
-        selectVerb();
       } else {
         setErrorMessage("Incorrect. Try again.");
         setIsAnswerAvailable(true);
