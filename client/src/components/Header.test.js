@@ -3,6 +3,15 @@ import userEvent from "@testing-library/user-event";
 import Header from "./Header";
 
 test("open options modal function is called when change options button is clicked", () => {
+  window.matchMedia =
+    window.matchMedia ||
+    function () {
+      return {
+        matches: false,
+        addListener: function () {},
+        removeListener: function () {},
+      };
+    };
   const openOptionsModal = jest.fn();
   render(<Header openOptionsModal={openOptionsModal}></Header>);
 

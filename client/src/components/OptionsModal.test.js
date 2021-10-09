@@ -57,7 +57,7 @@ describe("form selects", () => {
     expect(screen.queryByDisplayValue(/condizionale/i)).not.toBeInTheDocument();
 
     userEvent.selectOptions(
-      screen.getByRole("combobox", { name: /select a mood/i }),
+      screen.getByRole("combobox", { name: /mood/i }),
       "condizionale"
     );
     expect(screen.getByDisplayValue(/condizionale/i)).toBeInTheDocument();
@@ -79,7 +79,7 @@ describe("form selects", () => {
     expect(await screen.findByDisplayValue(/presente/)).toBeInTheDocument();
 
     userEvent.selectOptions(
-      screen.getByRole("combobox", { name: /select a mood/i }),
+      screen.getByRole("combobox", { name: /mood/i }),
       "infinito"
     );
     expect(await screen.findByDisplayValue(/passato/)).toBeInTheDocument();
