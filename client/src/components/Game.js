@@ -54,10 +54,13 @@ export default function Game({
   }, [isGameOver]);
 
   useEffect(() => {
+    inputRef.current.focus();
+  }, [isGameRunning]);
+
+  useEffect(() => {
     setVerbsData(fetchedVerbsData);
     setUserInput("");
     setErrorMessage("");
-    inputRef.current.focus();
     setNumberOfCorrectAnswers(0);
     setNumberOfAttempts(0);
     setAnsweredIncorrectly({});
