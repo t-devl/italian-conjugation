@@ -293,10 +293,6 @@ body {
   align-items: center;
 }
 
-.timer__time-left {
-  font-size: 1.1rem;
-}
-
 .timer__btn {
   padding: 0.5em 1em;
   margin-right: 0.5rem;
@@ -326,6 +322,18 @@ body {
       color: white;
     }
   }
+}
+
+.timer__select {
+  border: 1px solid var(--input-border);
+  border-radius: $border-radius;
+  background-color: var(--background);
+  color: var(--text);
+  font-size: 1.1rem;
+}
+
+.timer__time-left {
+  font-size: 1.1rem;
 }
 
 .score {

@@ -49,3 +49,16 @@ describe("pause button", () => {
     expect(setIsGameRunning).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("select", () => {
+  test("displays selected option", async () => {
+    const isGameRunning = false;
+    const isGameOver = true;
+    render(
+      <Timer isGameRunning={isGameRunning} isGameOver={isGameOver}></Timer>
+    );
+
+    userEvent.selectOptions(await screen.findByRole("combobox"), "60000");
+    expect(screen.getByDisplayValue(/1:00/i)).toBeInTheDocument();
+  });
+});

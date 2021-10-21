@@ -6,12 +6,21 @@ export default function Timer({
   isGameOver,
   setIsGameOver,
 }) {
+  const [selectedTime, setSelectedTime] = useState(300000);
   const [countDownFrom, setCountDownFrom] = useState(300000);
   const [startTime, setStartTime] = useState(0);
   const [timeLeftInMilliseconds, setTimeLeftInMilliseconds] = useState(300000);
   const [minutesLeft, setMinutesLeft] = useState(5);
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [hasTimerStarted, setHasTimerStarted] = useState(false);
+
+  const selectTime = (time) => {
+    setSelectedTime(time);
+    setCountDownFrom(time);
+    setMinutesLeft(time / 60000);
+    setSecondsLeft(0);
+    setTimeLeftInMilliseconds(time);
+  };
 
   const startTimer = () => {
     if (!hasTimerStarted) {
@@ -55,11 +64,8 @@ export default function Timer({
 
   useEffect(() => {
     if (isGameOver) {
-      setCountDownFrom(300000);
+      selectTime(selectedTime);
       setStartTime(0);
-      setTimeLeftInMilliseconds(300000);
-      setMinutesLeft(5);
-      setSecondsLeft(0);
       setHasTimerStarted(false);
     }
   }, [isGameOver]);
@@ -75,10 +81,31 @@ export default function Timer({
           Start
         </button>
       )}
-      <div className="timer__time-left">
-        {minutesLeft < 10 ? "0" + minutesLeft : minutesLeft}:
-        {secondsLeft < 10 ? "0" + secondsLeft : secondsLeft}
-      </div>
+      {isGameOver ? (
+        <select
+          className="timer__select"
+          value={selectedTime}
+          onChange={(e) => selectTime(e.target.value)}
+        >
+          <option className="timer__option" value="60000">
+            1:00
+          </option>
+          <option className="timer__option" value="180000">
+            3:00
+          </option>
+          <option className="timer__option" value="300000">
+            5:00
+          </option>
+          <option className="timer__option" value="600000">
+            10:00
+          </option>
+        </select>
+      ) : (
+        <div className="timer__time-left">
+          {minutesLeft < 10 ? "0" + minutesLeft : minutesLeft}:
+          {secondsLeft < 10 ? "0" + secondsLeft : secondsLeft}
+        </div>
+      )}
     </div>
   );
 }
